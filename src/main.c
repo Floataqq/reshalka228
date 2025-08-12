@@ -28,6 +28,11 @@ int read_equation(Equation *eq, int argc, char **argv) {
     return 0;
   }
 
+  if (fabs(a) < 10e-7) {
+    printf("Error: not a quardatic equation!\n  (although i can add a linear equation solver if needed)\n");
+    return 0;
+  }
+
   eq->a = a;
   eq->b = b;
   eq->c = c;
@@ -40,7 +45,7 @@ void print_solutions(Equation eq) {
   if (d < 0) {
     printf("Negative discriminant, no solutions!\n");
     return;
-  } else if (fabs(d) > 10e-7) {
+  } else if (fabs(d) < 10e-7) { // d = 0
     printf("Zero discriminant, one solution!\n");
     double x = -b / (2 * a);
     printf(" - x = %lf\n", x);
