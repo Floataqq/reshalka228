@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <math.h>
 
+typedef enum {
+  NOT_COMPUTED = 0,
+  NONE,
+  SINGLE,
+  DOUBLE,
+  INFINITE
+} SolutionStatus;
+
 typedef struct {
   /// x^2 coefficient
   int a;
@@ -8,6 +16,9 @@ typedef struct {
   int b;
   /// constant coefficient
   int c;
+  
+  SolutionStatus tag;
+  double solutions[2];
 } Equation;
 
 int read_equation(Equation *eq, int argc, char **argv) {
@@ -36,27 +47,45 @@ int read_equation(Equation *eq, int argc, char **argv) {
   eq->a = a;
   eq->b = b;
   eq->c = c;
+  eq->tag = NOT_COMPUTED;
   return 1;
 }
 
-void print_solutions(Equation eq) {
-  double a = eq.a, b = eq.b, c = eq.c;
+void compute_solutions(Equation *eq) {
+  double a = eq->a, b = eq->b, c = eq->c;
   double d = b*b - 4 * a*c;
-  if (d < 0) {
-    printf("Negative discriminant, no solutions!\n");
-    return;
-  } else if (fabs(d) < 10e-7) { // d = 0
-    printf("Zero discriminant, one solution!\n");
-    double x = -b / (2 * a);
-    printf(" - x = %lf\n", x);
-    return;
+  
+  if (fabs(d) < 10e-7) {
+    eq->tag = SINGLE;
+    eq->solutions[0] = -b / (2 * a);
+  } else if (d > 0) {
+    eq->tag = DOUBLE;
+    eq->solutions[0] = (-b + sqrt(d)) / (2 * a);
+    eq->solutions[1] = (-b - sqrt(d)) / (2 * a);
   } else {
-    printf("Positive discriminant, two solutions!\n");
-    double x1 = (-b + sqrt(d)) / (2 * a);
-    double x2 = (-b - sqrt(d)) / (2 * a);
-    printf(" - x1 = %lf\n"
-           " - x2 = %lf\n", x1, x2);
-    return;
+    eq->tag = NONE;
+  }
+}
+
+void print_solutions(Equation eq) {
+  switch (eq.tag) {
+    case NOT_COMPUTED:
+      printf("Error: The equation solutions were not yet computed!\n");
+      break;
+    case NONE:
+      printf("The equation has no solutions!\n");
+      break;
+    case SINGLE:
+      printf("The eqaution has a single solution:\n");
+      printf(" - x = %lf\n", eq.solutions[0]);
+      break;
+    case DOUBLE:
+      printf("The equation has two solutions:\n");
+      printf("- x1 = %lf\n", eq.solutions[0]);
+      printf("- x2 = %lf\n", eq.solutions[1]);
+      break;
+    case INFINITE:
+      printf("The eqaution has an infinite number of solutions!\n");
   }
 }
 
@@ -64,6 +93,8 @@ int main(int argc, char **argv) {
   Equation equation;  
   if (!read_equation(&equation, argc, argv))
     return 1;
+
+  compute_solutions(&equation);
   
   print_solutions(equation);
 
