@@ -3,7 +3,7 @@
 
 #define EPSILON 10e-7
 
-int iszero(double x) {
+int is_zero(double x) {
   return fabs(x) < EPSILON;
 }
 
@@ -45,7 +45,7 @@ int read_equation(Equation *eq, int argc, char **argv) {
     return 0;
   }
 
-  if (iszero(a)) {
+  if (is_zero(a)) {
     printf("Error: not a quardatic equation!\n  (although i can add a linear equation solver if needed)\n");
     return 0;
   }
@@ -61,7 +61,7 @@ void compute_solutions(Equation *eq) {
   double a = eq->a, b = eq->b, c = eq->c;
   double d = b*b - 4 * a*c;
   
-  if (iszero(a)) {
+  if (is_zero(a)) {
     eq->tag = SINGLE;
     eq->solutions[0] = -b / (2 * a);
   } else if (d > 0) {
