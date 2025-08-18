@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <math.h>
 
+#define EPSILON 10e-7
+
+int iszero(double x) {
+  return fabs(x) < EPSILON;
+}
+
 typedef enum {
   NOT_COMPUTED = 0,
   NONE,
@@ -39,7 +45,7 @@ int read_equation(Equation *eq, int argc, char **argv) {
     return 0;
   }
 
-  if (fabs(a) < 10e-7) {
+  if (iszero(a)) {
     printf("Error: not a quardatic equation!\n  (although i can add a linear equation solver if needed)\n");
     return 0;
   }
@@ -55,13 +61,14 @@ void compute_solutions(Equation *eq) {
   double a = eq->a, b = eq->b, c = eq->c;
   double d = b*b - 4 * a*c;
   
-  if (fabs(d) < 10e-7) {
+  if (iszero(a)) {
     eq->tag = SINGLE;
     eq->solutions[0] = -b / (2 * a);
   } else if (d > 0) {
+    double d_sqrt = sqrt(d);
     eq->tag = DOUBLE;
-    eq->solutions[0] = (-b + sqrt(d)) / (2 * a);
-    eq->solutions[1] = (-b - sqrt(d)) / (2 * a);
+    eq->solutions[0] = (-b + d_sqrt) / (2 * a);
+    eq->solutions[1] = (-b - d_sqrt) / (2 * a);
   } else {
     eq->tag = NONE;
   }
