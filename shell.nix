@@ -4,5 +4,6 @@
     gcc
     just
     gnumake
+    doxygen
   ];
 }
