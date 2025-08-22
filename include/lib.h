@@ -14,7 +14,7 @@ void abort_with_ndebug(void);
 
 /**
  * Quite similar to rust's `unreachable!()` macro.
- * 
+ *
  * Prints an error message like this:
  * ```
  * example.c:42
@@ -23,9 +23,10 @@ void abort_with_ndebug(void);
  *
  * And aborts execution unless NDEBUG is set.
  */
-#define UNREACHABLE() {                               \
+#define UNREACHABLE(...) {                            \
   printf("%s:%d\n", __FILE__, __LINE__);              \
   printf("  Unreachable code hit in %s\n", __func__); \
+  printf("" __VA_ARGS__);                             \
   abort_with_ndebug();                                \
 }
 
@@ -42,6 +43,11 @@ typedef enum {
   INFINITE
 } SolutionStatus;
 
+// TODO: обощить до полинома
+// TODO: добавить стандартныое значение тэгу
+//       (конструктор \ дефолтная инициализация)
+// TODO: union с четырехпольной структурой
+// TODO: список велосипедов: логи, парсинг аргументов
 typedef struct {
   /// x^2 coefficient
   double a;
@@ -49,13 +55,13 @@ typedef struct {
   double b;
   /// constant coefficient
   double c;
-  
-  /// A tag describing whether this equation's solutions 
+
+  /// A tag describing whether this equation's solutions
   /// have been computed and how many are there.
   ///
-  /// @brief Status of solution computation
+  /// @brief Status of solut ion computation
   SolutionStatus tag;
-  /// Array of solutions. A quadratic equation can have at most 2 
+  /// Array of solutions. A quadratic equation can have at most 2
   /// solutions, so there are just two elements. If there are less
   /// solutions, last elements of the array are unused.
   ///
@@ -88,7 +94,7 @@ int read_equation_from_line(const char *const line, Equation *eq);
  *  @param argv Arguments array
  *  @returns A zero if the equation was parsed successfully, otherwise a non-zero code.
  */
-int read_equation_from_argv(Equation *const eq, const int argc, 
+int read_equation_from_argv(Equation *const eq, const int argc,
                             const char *argv[]);
 
 /**
@@ -109,30 +115,37 @@ void print_solutions(const Equation eq);
 int is_zero(const double x);
 
 /**
- * Solves an #Equation assuming that it's \ref Equation.a coefficient equals 0. 
+ * Sets `-0` to 0. Otherwise returns the same number
+ *
+ * @param x The number to modify
+ * @returns Zero if the number is `-0`, otherwise the same number
+ */
+double normalize_zero(const double x);
+
+/**
+ * Solves an #Equation assuming that it's \ref Equation.a coefficient equals 0.
  * Puts the number of roots into \ref Equation.tag and the roots in \ref Equation.solutions
  *
- * @param eq Reference to the equation to solve 
+ * @param eq Reference to the equation to solve
  */
 void solve_linear_equation(Equation *const eq);
 
 /**
- * Solves an #Equation assuming that it's \ref Equation.a coefficient does not equal 0. 
+ * Solves an #Equation assuming that it's \ref Equation.a coefficient does not equal 0.
  * Puts the number of roots into \ref Equation.tag and the roots in \ref Equation.solutions
  *
- * @param eq Reference to the equation to solve 
+ * @param eq Reference to the equation to solve
  */
 void solve_quadratic_equation(Equation *const eq);
 
-
 /**
- * Solves an #Equation. 
+ * Solves an #Equation.
  * Puts the number of roots into \ref Equation.tag and the roots in \ref Equation.solutions
  *
- * @param eq Reference to the equation to solve 
+ * @param eq Reference to the equation to solve
  */
 void compute_solutions(Equation *const eq);
 
 
-#endif // #ifndef EQUATION_SOLVER_LIB
+#endif // EQUATION_SOLVER_LIB
 
