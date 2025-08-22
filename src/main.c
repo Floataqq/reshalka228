@@ -46,7 +46,6 @@ int read_equation_from_line(char *line, Equation *eq) {
 }
 
 int read_equation_from_argv(Equation *eq, int argc, char *argv[]) {
-  double a, b, c;
   int result;
   
   if (argc == 1)
@@ -99,7 +98,7 @@ void compute_solutions(Equation *eq) {
 
 void print_solutions(Equation eq) {
   char eq_str[MAX_LENGTH];
-  sprintf(eq_str, "%.2lf*x^2 + %.2lf*x + %.2lf = 0", eq.a, eq.b, eq.c);
+  sprintf(eq_str, "%lg*x^2 + %lg*x + %lg = 0", eq.a, eq.b, eq.c);
 
   switch (eq.tag) {
     case NOT_COMPUTED:
@@ -110,12 +109,12 @@ void print_solutions(Equation eq) {
       break;
     case SINGLE:
       printf("%s has a single solution:\n", eq_str);
-      printf(" - x = %lf\n", eq.solutions[0]);
+      printf(" - x = %lg\n", eq.solutions[0]);
       break;
     case DOUBLE:
       printf("%s has two solutions:\n", eq_str);
-      printf("- x1 = %lf\n", eq.solutions[0]);
-      printf("- x2 = %lf\n", eq.solutions[1]);
+      printf("- x1 = %lg\n", eq.solutions[0]);
+      printf("- x2 = %lg\n", eq.solutions[1]);
       break;
     case INFINITE:
       printf("%s has an infinite number of solutions!\n", eq_str);
