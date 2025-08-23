@@ -5,7 +5,7 @@
 
 #include <math.h>
 
-#include "lib.h"
+#include "equation.h"
 
 int is_zero(const double x) {
   return fabs(x) < EPSILON;

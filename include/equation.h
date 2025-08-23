@@ -10,7 +10,7 @@
  * Just like `assert(false)`, but doesn't print any sort of error message.
  * Does nothing if NDEBUG is defined.
  */
-void abort_with_ndebug(void);
+[[noreturn]] void abort_with_ndebug(void);
 
 /**
  * Quite similar to rust's `unreachable!()` macro.

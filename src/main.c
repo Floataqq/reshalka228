@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "lib.h"
+#include "equation.h"
 
 int main(int argc, const char *argv[]) {
   Equation equation = {};
@@ -42,3 +42,38 @@ int main(int argc, const char *argv[]) {
 
   return 0;
 }
+
+void print_solutions(const Equation eq) {
+  char eq_str[MAX_LENGTH] = {};
+  sprintf(eq_str, "%lg*x^2 + %lg*x + %lg = 0", eq.a, eq.b, eq.c);
+
+  switch (eq.tag) {
+    case NOT_COMPUTED:
+      printf("Error: %s solutions were not yet computed!\n", eq_str);
+      break;
+
+    case NONE:
+      printf("%s has no solutions!\n", eq_str);
+      break;
+
+    case SINGLE:
+      printf("%s has a single solution:\n", eq_str);
+      printf(" - x = %lg\n", eq.solutions[0]);
+      break;
+
+    case DOUBLE:
+      printf("%s has two solutions:\n", eq_str);
+      printf("- x1 = %lg\n", eq.solutions[0]);
+      printf("- x2 = %lg\n", eq.solutions[1]);
+      break;
+
+    case INFINITE:
+      printf("%s has an infinite number of solutions!\n", eq_str);
+      break;
+
+    default:
+      UNREACHABLE("Encountered invalid eq.tag: %d\n", eq.tag);
+      break;
+  }
+}
+

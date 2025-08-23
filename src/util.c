@@ -5,7 +5,7 @@
 
 #include <stdlib.h>
 
-#include "lib.h"
+#include "equation.h"
 
 [[noreturn]] void abort_with_ndebug(void) {
   #ifndef NDEBUG
