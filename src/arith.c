@@ -11,6 +11,10 @@ int is_zero(const double x) {
   return fabs(x) < EPSILON;
 }
 
+int is_equal(const double x, const double y) {
+  return fabs(x - y) < EPSILON;
+}
+
 double normalize_zero(const double x) {
   return is_zero(x) ? 0 : x;
 }

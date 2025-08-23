@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+
 #include "equation.h"
+#include "log.h"
 
 int main(int argc, const char *argv[]) {
   Equation equation = {};
@@ -31,7 +33,7 @@ int main(int argc, const char *argv[]) {
 
       line_no++;
       if (read_equation_from_line(line, &equation)) {
-        printf("Warning: could not read equation at line %d!\n", line_no);
+        LOG_WARN("Warning: could not read equation at line %d!", line_no);
         continue;
       }
 
@@ -49,7 +51,7 @@ void print_solutions(const Equation eq) {
 
   switch (eq.tag) {
     case NOT_COMPUTED:
-      printf("Error: %s solutions were not yet computed!\n", eq_str);
+      LOG_ERROR("Error: %s solutions were not yet computed!", eq_str);
       break;
 
     case NONE:

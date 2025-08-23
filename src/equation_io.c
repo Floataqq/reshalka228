@@ -7,6 +7,7 @@
 #include <math.h>
 
 #include "equation.h"
+#include "log.h"
 
 int read_equation_from_line(const char *const line, Equation *eq) {
   double a = NAN, b = NAN, c = NAN;
@@ -27,7 +28,7 @@ int read_equation_from_argv(Equation *const eq,
   int result = 0;
 
   if (argc != 4) {
-    printf("Error: invalid format - not enough arguments!\n");
+    LOG_ERROR("Invalid format - not enough arguments!");
     return 1;
   }
 
@@ -36,7 +37,7 @@ int read_equation_from_argv(Equation *const eq,
 
   result = read_equation_from_line(input, eq);
   if (result)
-    printf("Error: invalid format in args!\n");
+    LOG_ERROR("Invalid format in args!");
   return result;
 }
 

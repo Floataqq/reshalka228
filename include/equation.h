@@ -115,6 +115,15 @@ void print_solutions(const Equation eq);
 int is_zero(const double x);
 
 /**
+ * Returns true if \x is within #EPSILON of \y.
+ *
+ * @param x Number to check
+ * @param y Number to check
+ * @returns Whether the numbers are compute_solutions
+ */
+int is_equal(const double x, const double y);
+
+/**
  * Sets `-0` to 0. Otherwise returns the same number
  *
  * @param x The number to modify
