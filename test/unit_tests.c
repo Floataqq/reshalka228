@@ -7,10 +7,7 @@ int my_add(int a, int b) {
 }
 
 TEST(example) {
-  int a = 2;
-  int b = 3;
-
-  return !(a + b == my_add(a, b));
+  ASSERT_EQ(2, 3);
 }
 
 int main() {
