@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // ------- PROTOTYPES -------
 
@@ -19,7 +20,7 @@ typedef enum {
 
 typedef struct {
   _FL_TestStatus status;
-  char *message;
+  char message[1024];
 } _FL_TestResult;
 
 typedef struct {
@@ -31,11 +32,12 @@ typedef struct {
 
 _FL_Test *_fl_test_data = {};
 size_t    _fl_test_count = 0;
+size_t    _fl_test_capacity = 0;
 uint32_t  _fl_status = 0;
 
 uint32_t _fl_test_add_test(const char test_name[], void (*test)(_FL_TestResult*));
-void _fl_run_test(_FL_Test test);
-void fl_run_tests();
+void     _fl_run_test(_FL_Test test);
+void      fl_run_tests();
 
 // ------- TEST MACROS -------
 
@@ -60,14 +62,11 @@ void fl_run_tests();
                    void     _FL_TEST_##name(_FL_TestResult *_fl_test_result)
 
 #define SUCCESS() { _fl_test_result->status = FL_SUCCESS; }
-#define FAIL_WITH_MSG(...) {                                 \
-      _fl_test_result->status = FL_FAIL;                     \
-      char *message = (char *) malloc(FL_MAX_MSG);           \
-      /* freed after running tests */                        \
-      _fl_test_result->message = message;                    \
-      sprintf(message, __VA_ARGS__);                         \
-      return;                                                \
-    }                                                        \
+#define FAIL_WITH_MSG(...) {                                       \
+      _fl_test_result->status = FL_FAIL;                           \
+      snprintf(_fl_test_result->message, FL_MAX_MSG, __VA_ARGS__); \
+      return;                                                      \
+    }                                                              \
 
 #define ASSERT_BOOL_MSG(x, ...)  {      \
     if (x) {                            \
@@ -84,14 +83,17 @@ void fl_run_tests();
 // ------- INFRASTRUCTURE -------
 
 uint32_t _fl_test_add_test(const char test_name[], void (*test)(_FL_TestResult *)) {
+  if (_fl_test_count == _fl_test_capacity) {
+    _fl_test_capacity += 1024;
+    _fl_test_data = (_FL_Test *)realloc(_fl_test_data, _fl_test_capacity * sizeof(_FL_Test));
+  }
   _fl_test_count++;
-  _fl_test_data = (_FL_Test *)realloc(_fl_test_data, _fl_test_count * sizeof(_FL_Test));
   _fl_test_data[_fl_test_count - 1] = (_FL_Test) {
     .name = test_name,
     .func = test,
     .res = (_FL_TestResult) {
       .status = FL_UNKNOWN,
-      .message = NULL
+      .message = {}
     }
   };
   return 0;
@@ -122,10 +124,8 @@ void _fl_run_test(_FL_Test test) {
     printf("[?] %s: unknown status value: %d\n", test.name, test.res.status);
   }
 
-  if (test.res.message) {
+  if (!test.res.message[0])
     printf("  msg: '%s'\n", test.res.message);
-    free(test.res.message);
-  }
 }
 
 /**

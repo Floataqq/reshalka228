@@ -1,4 +1,5 @@
 #include "test.h"
+#include "log.h"
 
 int my_add(int a, int b);
 
@@ -11,6 +12,11 @@ TEST(example) {
 }
 
 int main() {
+  LOG_DEBUG ("Meow!");
+  LOG_INFO  ("Meow! format: %d", 1231);
+  LOG_WARN  ("Meow!");
+  LOG_ERROR ("Meow!");
+
   fl_run_tests();
 }
 
