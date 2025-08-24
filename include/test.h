@@ -23,7 +23,7 @@ typedef struct {
 
 typedef struct {
   const char *name;
-  void (*func)(_FL_TestResult *);
+  void (*func)();
 
   _FL_TestResult res;
 } _FL_Test;
@@ -32,13 +32,18 @@ extern _FL_Test *_fl_test_data;
 extern size_t    _fl_test_count;
 extern size_t    _fl_test_capacity;
 
-int  _fl_add_test(const char test_name[], void (*test)(_FL_TestResult*));
-void  fl_test_runner(_FL_Test test, int *failed_num);
+// Используется ассертами под капотом, чтобы понимать, к какому тесту они относятся
+extern thread_local size_t _fl_current_test_index;
+
+// TODO: мега ассерт
+
+int  _fl_add_test(const char test_name[], void (*test)());
+void  fl_test_runner(int *failed_num);
 
 /**
  * Run all the registered tests. Just call it from a separate main() and include all TEST* declarations
  */
-[[noreturn]] void  fl_run_tests();
+[[noreturn]] void fl_run_tests();
 
 // ------- TEST MACROS -------
 
@@ -49,25 +54,26 @@ void  fl_test_runner(_FL_Test test, int *failed_num);
  *   // any sort of setup code
  *   int a = 2, b = 3;
  *   
- *   // you can use _fl_test_result parameter to modify 
- *      the test result by hand
- *   _fl_test_result->status = FL_FAIL;
- *
  *   // sequence of assertions
  *   ASSERT_EQ(a + b, 5);
  * }
  * ```
  */
-#define TEST(name) void _FL_TEST_##name(_FL_TestResult *_fl_test_result);                   \
-                   int  _FL_TEST_RES_##name = _fl_add_test(#name, &_FL_TEST_##name);   \
-                   void  _FL_TEST_##name(_FL_TestResult *_fl_test_result)
+#define TEST(name)                                                    \
+  void _FL_TEST_##name();                                             \
+  int  _FL_TEST_RES_##name = _fl_add_test(#name, &_FL_TEST_##name);   \
+  void _FL_TEST_##name()
 
-#define SUCCESS() { _fl_test_result->status = FL_SUCCESS; }
-#define FAIL_WITH_MSG(...) {                                       \
-      _fl_test_result->status = FL_FAIL;                           \
-      snprintf(_fl_test_result->message, FL_MAX_MSG, __VA_ARGS__); \
-      return;                                                      \
-    }                                                              \
+#define SUCCESS() {                                                   \
+    _fl_test_data[_fl_current_test_index].res.status = FL_SUCCESS;    \
+  }
+
+#define FAIL_WITH_MSG(...) {                                                        \
+      _FL_TestResult *_fl_test_result = &_fl_test_data[_fl_current_test_index].res; \
+      _fl_test_result->status = FL_FAIL;                                            \
+      snprintf(_fl_test_result->message, FL_MAX_MSG, __VA_ARGS__);                  \
+      return;                                                                       \
+    }
 
 #define ASSERT_BOOL_MSG(x, ...)  {      \
     if (x) {                            \
