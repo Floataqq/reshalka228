@@ -53,13 +53,15 @@ typedef enum {
 
 typedef struct {
   FL_LogFormat fmt;
-  const char * func;
+  const char *func;
+  const int   line; 
 } _FL_LogContext;
 
 #define GET_LOG_CONTEXT() (    \
     (_FL_LogContext) {         \
       .fmt = _fl_log_format,   \
-      .func = __func__         \
+      .func = __func__,        \
+      .line = __LINE__         \
     })
 
 int _fl_write_log(FL_LogLevel level, _FL_LogContext ctx, const char *fmt, ...);

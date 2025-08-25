@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "app_args.h"
 #include "equation.h"
 #include "log.h"
 
-int main(int argc, const char *argv[]) {
+
+int main(int argc, char *argv[]) {
+  Args args = get_args(argc, argv);
+
   Equation equation = {};
 
   if (argc != 1) /* input from argv */ {

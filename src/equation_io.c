@@ -9,7 +9,7 @@
 #include "equation.h"
 #include "log.h"
 
-int read_equation_from_line(const char *const line, Equation *eq) {
+int read_equation_from_line(char *line, Equation *eq) {
   double a = NAN, b = NAN, c = NAN;
   int result = sscanf(line, "%lf %lf %lf", &a, &b, &c);
   // scanf reads three things
@@ -23,8 +23,8 @@ int read_equation_from_line(const char *const line, Equation *eq) {
   return 0;
 }
 
-int read_equation_from_argv(Equation *const eq,
-                            const int argc, const char *argv[]) {
+int read_equation_from_argv(Equation *eq,
+                            int argc, char *argv[]) {
   int result = 0;
 
   if (argc != 4) {

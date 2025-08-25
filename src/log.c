@@ -50,19 +50,19 @@ int _fl_write_log_txt(FL_LogLevel level, _FL_LogContext ctx,
                       const char *fmt, va_list args) {
   switch(level) {
   case FL_DEBUG:
-    printf("[debug][%s] ", ctx.func);
+    printf("[debug][%s:%d] ", ctx.func, ctx.line);
     break;
   case FL_INFO:
-    printf("[info][%s] ", ctx.func);
+    printf("[info][%s:%d] ", ctx.func, ctx.line);
     break;
   case FL_WARN:
-    printf("[warn][%s] ", ctx.func);
+    printf("[warn][%s:%d] ", ctx.func, ctx.line);
     break;
   case FL_ERROR:
-    printf("[error][%s] ", ctx.func);
+    printf("[error][%s:%d] ", ctx.func, ctx.line);
     break;
   default:
-    printf("[unknown(level = %d)][%s] ", level, ctx.func);
+    printf("[unknown(level = %d)][%s:%d] ", level, ctx.func, ctx.line);
     break;
   }
 
