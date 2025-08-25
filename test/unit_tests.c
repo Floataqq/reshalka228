@@ -33,7 +33,7 @@
   }
 
 SOLVE_EQUATION_TEST_0(solve_equation_three_zeros, 0,  0,  0, INFINITE)
-SOLVE_EQUATION_TEST_0(solve_equation_zero_a_b,    0,  0,  1, NONE)
+SOLVE_EQUATION_TEST_0(solve_equation_zero_a_b,    0,  0,  1, DOUBLE)
 SOLVE_EQUATION_TEST_1(solve_equation_zero_a_c,    0,  5,  0, 0)
 SOLVE_EQUATION_TEST_1(solve_equation_zero_b_c,    4,  0,  0, 0)
 SOLVE_EQUATION_TEST_1(solve_equation_zero_a,      0,  2, -1, 0.5)
