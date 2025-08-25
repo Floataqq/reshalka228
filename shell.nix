@@ -3,7 +3,6 @@
   packages = with pkgs; [
     gcc
     just
-    gnumake
     doxygen
   ];
 }
