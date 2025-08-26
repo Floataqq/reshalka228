@@ -62,7 +62,7 @@ ParseStatus parse_args(int argc, char *argv[], ArgSpec spec,
       LOG_DEBUG("Long flag `%s`", argv[i]);
       ParseStatus res = parse_long_flag(spec, argc, argv, &i, output, output_len);
 
-      if (res != PARSE_PARSE_OK)
+      if (res != PARSE_OK)
         return res;
     } else if (argument_len && argument[0] == '-') {                    // sequence of short flags
       LOG_DEBUG("Short flags `%s`", argv[i]);
