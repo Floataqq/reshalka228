@@ -19,14 +19,49 @@ jobs:
 
     - uses: awalsh128/cache-apt-pkgs-action@latest
       with:
-        packages: just gcc doxygen
+        packages: just gcc
         version: 1.0
-    
+
     - name: 'Build the code'
-      run: |
-        just build
+      run: just build
 
     - name: 'Test everything'
-      run: |
-        just test
+      run: just test
+
+  build-docs:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: doxygen
+        version: 1.0
+
+    - name: 'Build doxygen docs'
+      run: just build-docs
+
+    - name: 'Upload github pages artifact'
+      id: upload-pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./build/docs/html
+
+  deploy-docs:
+    needs: build-docs
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.upload-pages.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
 
