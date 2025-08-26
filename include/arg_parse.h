@@ -75,7 +75,7 @@ typedef struct {
  */
 typedef union {
   /// A string value for arguments with values
-  char *str_val;
+  const char *str_val;
   /// A bool for on/off flags
   bool bool_val;
 } ParsedValue;
@@ -116,8 +116,8 @@ typedef enum {
  *
  * @returns A #ParseStatus - either #PARSE_OK or some error.
  */
-ParseStatus parse_args(int argc, char *argv[], ArgSpec spec,
-               ParsedArg *output, size_t *output_len);
+ParseStatus parse_args(const int argc, const char *argv[], ArgSpec spec,
+                       ParsedArg *output, size_t *output_len);
 
 
 #endif // FLOATAQQ_LIB_ARG_PARSE

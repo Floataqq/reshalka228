@@ -35,7 +35,19 @@ FL_LogFormat  _fl_get_log_format(void);
 void           fl_set_log_format(FL_LogFormat format);
 
 extern FL_LogFormat _fl_log_format;
+extern bool         _fl_do_logs;
 
+/**
+ * Turn logs back on.
+ * \relates fl_logs_off
+ */
+void fl_logs_on (void);
+
+/**
+ * Suppress all logs temporarily.
+ * \relates fl_logs_on
+ */
+void fl_logs_off(void);
 
 /// An enum describing log levels
 typedef enum {

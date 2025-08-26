@@ -47,7 +47,7 @@ const ArgSpec spec = {
   .synopsis = "Solve quadratic eqautions with ease!",
 };
 
-Args get_args(int argc, char *argv[]) {
+Args get_args(const int argc, const char *argv[]) {
   ParsedArg *output = (ParsedArg *) malloc(sizeof(ParsedArg) * 256);
   size_t output_len = 0;
 

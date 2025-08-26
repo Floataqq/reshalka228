@@ -24,7 +24,7 @@ typedef struct {
 /*
  * Get the #Args struct from command line, while nicely handling errors.
  */
-Args get_args(int argc, char *arg[]);
+Args get_args(const int argc, const char *argv[]);
 
 /*
  * A destructor for #Args. Must call before exiting application.

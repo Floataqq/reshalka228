@@ -41,7 +41,9 @@ void fl_test_runner(int *failed_num) {
     exit(-1);
   }
 
+  fl_logs_off();
   test->func();
+  fl_logs_on();
 
   switch(test->res.status) {
   case FL_SUCCESS:

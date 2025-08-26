@@ -27,6 +27,9 @@ int _fl_write_log_txt(FL_LogLevel level, _FL_LogContext ctx,
                       const char *fmt, va_list args);
 
 int _fl_write_log(FL_LogLevel level, _FL_LogContext ctx, const char *fmt, ...) {
+  if (!_fl_do_logs)
+    return 0;
+
   va_list args;
   va_start(args, fmt);
 
@@ -98,6 +101,16 @@ int _fl_write_log_color(FL_LogLevel level, _FL_LogContext ctx,
   printf(COLOR_RESET);
 
   return result;
+}
+
+bool _fl_do_logs = true;
+
+void fl_logs_on(void) {
+  _fl_do_logs = true;
+}
+
+void fl_logs_off(void) {
+  _fl_do_logs = false;
 }
 
 
