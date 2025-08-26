@@ -41,7 +41,7 @@ jobs:
         version: 1.0
 
     - name: 'Build doxygen docs'
-      run: just build-docs
+      run: just docs
 
     - name: 'Upload github pages artifact'
       id: upload-pages
