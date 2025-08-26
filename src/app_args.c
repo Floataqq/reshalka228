@@ -9,6 +9,7 @@
 
 #include "arg_parse.h"
 #include "app_args.h"
+#include "log.h"
 
 int file_validator    (const char *file,     char *error);
 int prec_validator    (const char *prec,     char *error);
@@ -52,6 +53,7 @@ Args get_args(const int argc, const char *argv[]) {
   size_t output_len = 0;
 
   ParseStatus res = parse_args(argc, argv, spec, output, &output_len);
+  
   if (res != PARSE_OK) {
     free(output);
     exit(1);

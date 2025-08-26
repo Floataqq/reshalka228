@@ -63,13 +63,13 @@ void print_solutions(const Equation eq) {
 
     case SINGLE:
       printf("%s has a single solution:\n", eq_str);
-      printf(" - x = %lg\n", eq.solutions[0]);
+      printf(" - x = %lg + %lgi\n", eq.solutions[0].real, eq.solutions[1].imag);
       break;
 
     case DOUBLE:
       printf("%s has two solutions:\n", eq_str);
-      printf("- x1 = %lg\n", eq.solutions[0]);
-      printf("- x2 = %lg\n", eq.solutions[1]);
+      printf("- x1 = %lg + %lgi\n", eq.solutions[0].real, eq.solutions[0].imag);
+      printf("- x2 = %lg + %lgi\n", eq.solutions[1].real, eq.solutions[1].imag);
       break;
 
     case INFINITE:

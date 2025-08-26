@@ -3,9 +3,12 @@
  * @brief Arithmetic-related function definitions
  */
 
+#include <cmath>
 #include <math.h>
 
 #include "equation.h"
+#include "complex.h"
+#include "log.h"
 
 int is_zero(const double x) {
   return fabs(x) < EPSILON;
@@ -27,14 +30,14 @@ void solve_linear_equation(Equation *const eq) {
 
   if (!is_zero_b && is_zero_c) {
     eq->tag = SINGLE;
-    eq->solutions[0] = 0;
+    eq->solutions[0] = {0};
   } else if (!is_zero_c && is_zero_b) {
     eq->tag = NONE;
   } else if (is_zero_b && is_zero_c) {
     eq->tag = INFINITE;
   } else {
     eq->tag = SINGLE;
-    eq->solutions[0] = normalize_zero(-c / b);
+    eq->solutions[0] = {normalize_zero(-c / b)};
   }
 }
 
@@ -45,14 +48,19 @@ void solve_quadratic_equation(Equation *const eq) {
 
   if (is_zero(d)) {
     eq->tag = SINGLE;
-    eq->solutions[0] = normalize_zero(-b / (2 * a));
-  } else if (d > 0) {
-    double d_sqrt = sqrt(d);
-    eq->tag = DOUBLE;
-    eq->solutions[0] = normalize_zero((-b + d_sqrt) / (2 * a));
-    eq->solutions[1] = normalize_zero((-b - d_sqrt) / (2 * a));
+    eq->solutions[0] = {normalize_zero(-b / (2 * a))};
   } else {
-    eq->tag = NONE;
+    complex_t d_sqrt = cmplx_sqrt({d});
+    
+    eq->tag = DOUBLE;
+    eq->solutions[0] = cmplx_normalize_zero(cmplx_div(
+      cmplx_sub({-b}, d_sqrt),
+      cmplx_mul({a}, {2})
+    ));
+    eq->solutions[1] = cmplx_normalize_zero(cmplx_div(
+      cmplx_add({-b}, d_sqrt),
+      cmplx_mul({a}, {2})
+    ));
   }
 }
 
@@ -62,5 +70,4 @@ void compute_solutions(Equation *const eq) {
   else
     solve_quadratic_equation(eq);
 }
-
 

@@ -96,6 +96,7 @@ ParseStatus parse_args(const int argc, const char *argv[], ArgSpec spec,
       LOG_ERROR("Missing positional argument %s!", pos_spec->long_flag);
       return MISSING_VALUE;
     }
+    positional_index++;
   }
 
   return PARSE_OK;

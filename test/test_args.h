@@ -12,7 +12,7 @@ const ArgSpec spec = {
   .data = args,
 };
 
-
+void dump_res(ParsedArg *data, size_t len);
 void dump_res(ParsedArg *data, size_t len) {
   for (size_t i = 0; i < len; i++) {
     printf("- %s - %p\n", data[i].long_flag, data[i].value.str_val);
@@ -52,6 +52,8 @@ void dump_res(ParsedArg *data, size_t len) {
       }                                                                  \
     }                                                                    \
   }                                                                      
+
+const ParsedValue str_val(const char *str);
 
 const ParsedValue bool_true = { .bool_val = true };
 const ParsedValue str_val(const char *str) {

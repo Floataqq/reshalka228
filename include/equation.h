@@ -2,6 +2,7 @@
 #define EQUATION_SOLVER_LIB
 
 #include <stdlib.h>
+#include "complex.h"
 
 #define EPSILON 10e-7
 #define MAX_LENGTH 256
@@ -68,7 +69,7 @@ typedef struct {
   /// solutions, last elements of the array are unused.
   ///
   /// @brief Array with solutions
-  double solutions[2];
+  complex_t solutions[2];
 } Equation;
 
 // ------- src/equation_io.c -------
