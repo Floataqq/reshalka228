@@ -1,5 +1,8 @@
-#include <algorithm>
-#include <cstddef>
+/**
+ * @file
+ * @brief General argument parsing library
+ */
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -59,19 +62,19 @@ ParseStatus parse_args(int argc, char *argv[], ArgSpec spec,
       LOG_DEBUG("Long flag `%s`", argv[i]);
       ParseStatus res = parse_long_flag(spec, argc, argv, &i, output, output_len);
 
-      if (res != OK)
+      if (res != PARSE_PARSE_OK)
         return res;
     } else if (argument_len && argument[0] == '-') {                    // sequence of short flags
       LOG_DEBUG("Short flags `%s`", argv[i]);
       ParseStatus res = parse_shorthand_chain(spec, argc, argv, &i, output, output_len);
 
-      if (res != OK)
+      if (res != PARSE_OK)
         return res;
     } else {                                                            // positional argument
       LOG_DEBUG("Positional argument `%s`", argv[i]);
       ParseStatus res = parse_positional_argument(spec, argv[i], positional_index, &i, output, output_len);
 
-      if (res != OK)
+      if (res != PARSE_OK)
         return res;
 
       positional_index++;
@@ -85,7 +88,7 @@ ParseStatus parse_args(int argc, char *argv[], ArgSpec spec,
     return MISSING_VALUE;
   }
 
-  return OK;
+  return PARSE_OK;
 }
 
 ParseStatus parse_long_flag(
@@ -105,20 +108,20 @@ ParseStatus parse_long_flag(
   if (arg_spec->value == NO_VALUE) {
     // no value - dont't parse and return
     add_parsed_arg(output, output_len, { arg_spec->long_flag, value_str(NULL) });
-    return OK;
+    return PARSE_OK;
   } else {
     // otherwise try to parse value
     ParsedValue value;
     ParseStatus res = try_parse_value(argc, argv, arg_spec, current_arg, &value);
 
-    if (res == OK) {
+    if (res == PARSE_OK) {
       add_parsed_arg(output, output_len, { arg_spec->long_flag, value });
-      return OK;
+      return PARSE_OK;
     } else if (res == MISSING_VALUE) {
       // if the value is required, fail. otherwise return NULL
       if (arg_spec->value == OPTIONAL_VALUE) {
         add_parsed_arg(output, output_len, { arg_spec->long_flag, value_str(NULL) });
-        return OK;
+        return PARSE_OK;
       } else {
         LOG_ERROR("Long flag %s requires a value!", flag);
         return MISSING_VALUE;
@@ -127,7 +130,7 @@ ParseStatus parse_long_flag(
       return res;
     }
   }
-  return OK;
+  return PARSE_OK;
 }
 
 ParseStatus parse_shorthand_chain(
@@ -176,11 +179,11 @@ ParseStatus parse_positional_argument(
   }
 
   ParseStatus res = run_validator(curr_spec, arg);
-  if (res != OK)
+  if (res != PARSE_OK)
     return res;
 
   add_parsed_arg(output, output_len, { curr_spec->long_flag, value_str(arg) });
-  return OK;
+  return PARSE_OK;
 }
 
 
@@ -196,18 +199,18 @@ ParseStatus try_parse_trailing_value(
 
   if(curr_spec->value == NO_VALUE) {
     add_parsed_arg(output, output_len, { curr_spec->long_flag, value_bool(true) });
-    return OK;
+    return PARSE_OK;
   } else {
     ParsedValue value = {};
     ParseStatus res = try_parse_value(argc, argv, curr_spec, current_arg, &value);
 
-    if (res == OK) {
+    if (res == PARSE_OK) {
       add_parsed_arg(output, output_len, { curr_spec->long_flag, value });
-      return OK;
+      return PARSE_OK;
     } else if (res == MISSING_VALUE) {
       if (curr_spec->value == OPTIONAL_VALUE) {
         add_parsed_arg(output, output_len, { curr_spec->long_flag, value_str(NULL) });
-        return OK;
+        return PARSE_OK;
       } else {
         LOG_ERROR("Missing value for shorthand -%c (--%s)!", flag, curr_spec->long_flag);
         return MISSING_VALUE;
@@ -239,10 +242,10 @@ ParseStatus try_parse_value(int argc, char *argv[], const ArgSpecItem *spec, int
   }
 
   ParseStatus res = run_validator(spec, item->str_val);
-  if (res != OK)
+  if (res != PARSE_OK)
     return res;
 
-  return OK;
+  return PARSE_OK;
 }
 
 const ArgSpecItem *get_spec_by_long_flag(char *flag, ArgSpec spec) {
@@ -287,7 +290,7 @@ ParseStatus run_validator(const ArgSpecItem *spec, const char *arg) {
     return INVALID_VALUE;
   }
 
-  return OK;
+  return PARSE_OK;
 }
 
 void add_parsed_arg(ParsedArg *out, size_t *len, ParsedArg item) {
@@ -308,28 +311,28 @@ ParsedValue value_bool(bool val) {
   if (spec.synopsis)
     printf("%s\n", spec.synopsis);
   putchar('\n');
-  
+
   // flags first
   printf("Options:\n");
   for (int i = 0; i < spec.len; i++) {
     ArgSpecItem curr_arg = spec.data[i];
     if (curr_arg.arg_type != FLAG)
       continue;
-    
+
     printf("  ");
     if (curr_arg.short_flag)
       printf("-%c, ", curr_arg.short_flag);
     else
       printf("    ");
 
-    printf("--%-20s", curr_arg.long_flag); 
+    printf("--%-20s", curr_arg.long_flag);
 
     if (curr_arg.help)
       printf("%s", curr_arg.help);
 
     putchar('\n');
   }
-  
+
   // positionals later
   printf("Arguments:\n");
   for (int i = 0; i < spec.len; i++) {
@@ -342,7 +345,7 @@ ParsedValue value_bool(bool val) {
       printf(" %s", curr_arg.help);
     putchar('\n');
   }
-  
+
   printf("\n\n");
   if (spec.footer)
     printf("%s", spec.footer);

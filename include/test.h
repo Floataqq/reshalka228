@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief A testing library that works quite similarly to gtest
+ */
+
 #ifndef FLOATAQQ_TEST_LIB
 #define FLOATAQQ_TEST_LIB
 
@@ -9,11 +14,11 @@
 
 #define FL_MAX_MSG 1024
 
-typedef enum { 
-  FL_UNKNOWN, 
-  FL_SUCCESS, 
-  FL_FAIL, 
-  FL_EXCEPTION 
+typedef enum {
+  FL_UNKNOWN,
+  FL_SUCCESS,
+  FL_FAIL,
+  FL_EXCEPTION
 } _FL_TestStatus;
 
 typedef struct {
@@ -32,7 +37,7 @@ extern _FL_Test *_fl_test_data;
 extern size_t    _fl_test_count;
 extern size_t    _fl_test_capacity;
 
-// Используется ассертами под капотом, чтобы понимать, к какому тесту они относятся
+// Used by asserts under the hood to understand, what test are they for.
 extern thread_local size_t _fl_current_test_index;
 
 // TODO: мега ассерт
@@ -41,7 +46,7 @@ int  _fl_add_test(const char test_name[], void (*test)());
 void  fl_test_runner(int *failed_num);
 
 /**
- * Run all the registered tests. Just call it from a separate main() and include all TEST* declarations
+ * Run all the registered tests. Just call it from a separate main() and include all #TEST declarations
  */
 [[noreturn]] void fl_run_tests();
 
@@ -53,7 +58,7 @@ void  fl_test_runner(int *failed_num);
  * TEST(example_test) {
  *   // any sort of setup code
  *   int a = 2, b = 3;
- *   
+ *
  *   // sequence of assertions
  *   ASSERT_EQ(a + b, 5);
  * }

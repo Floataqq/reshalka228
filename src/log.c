@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Logging facilities
+ */
+
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -16,15 +21,15 @@ void fl_set_log_format(FL_LogFormat format) {
   _fl_log_format = format;
 }
 
-int _fl_write_log_color(FL_LogLevel level, _FL_LogContext ctx, 
+int _fl_write_log_color(FL_LogLevel level, _FL_LogContext ctx,
                       const char *fmt, va_list args);
-int _fl_write_log_txt(FL_LogLevel level, _FL_LogContext ctx, 
+int _fl_write_log_txt(FL_LogLevel level, _FL_LogContext ctx,
                       const char *fmt, va_list args);
 
 int _fl_write_log(FL_LogLevel level, _FL_LogContext ctx, const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  
+
   int result = 0;
 
   switch (_fl_log_format) {
@@ -46,7 +51,7 @@ int _fl_write_log(FL_LogLevel level, _FL_LogContext ctx, const char *fmt, ...) {
   return result;
 }
 
-int _fl_write_log_txt(FL_LogLevel level, _FL_LogContext ctx, 
+int _fl_write_log_txt(FL_LogLevel level, _FL_LogContext ctx,
                       const char *fmt, va_list args) {
   switch(level) {
   case FL_DEBUG:
@@ -69,7 +74,7 @@ int _fl_write_log_txt(FL_LogLevel level, _FL_LogContext ctx,
   return vprintf(fmt, args);
 }
 
-int _fl_write_log_color(FL_LogLevel level, _FL_LogContext ctx, 
+int _fl_write_log_color(FL_LogLevel level, _FL_LogContext ctx,
                       const char *fmt, va_list args) {
   switch(level) {
   case FL_DEBUG:
@@ -89,7 +94,7 @@ int _fl_write_log_color(FL_LogLevel level, _FL_LogContext ctx,
   }
 
   int result = _fl_write_log_txt(level, ctx, fmt, args);
-  
+
   printf(COLOR_RESET);
 
   return result;

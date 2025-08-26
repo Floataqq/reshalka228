@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Testing facilities
+ */
+
 #include <iterator>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,7 +42,7 @@ void fl_test_runner(int *failed_num) {
   }
 
   test->func();
-  
+
   switch(test->res.status) {
   case FL_SUCCESS:
     LOG_INFO("[+] %s: PASS", test->name);
@@ -62,11 +67,11 @@ void fl_test_runner(int *failed_num) {
   printf("Running tests...\n");
 
   int failed_num = 0;
-  
+
   for (_fl_current_test_index = 0; _fl_current_test_index < _fl_test_count; _fl_current_test_index++) {
     fl_test_runner(&failed_num);
   }
-  
+
   // Throws number of failed tests as an exit code
   exit(failed_num);
 }

@@ -49,6 +49,7 @@ typedef enum {
 // TODO: union с четырехпольной структурой
 // TODO: список велосипедов: логи, парсинг аргументов
 // TODO: ассерты везде накидать
+/// A structure describing a quadratic equation and it's solutions
 typedef struct {
   /// x^2 coefficient
   double a;
@@ -60,7 +61,7 @@ typedef struct {
   /// A tag describing whether this equation's solutions
   /// have been computed and how many are there.
   ///
-  /// @brief Status of solut ion computation
+  /// @brief Status of soluti on computation
   SolutionStatus tag;
   /// Array of solutions. A quadratic equation can have at most 2
   /// solutions, so there are just two elements. If there are less
@@ -73,19 +74,21 @@ typedef struct {
 // ------- src/equation_io.c -------
 
 /**
- * Reads an #Equation from a string \p line in the format: <a> <b> <c>.
+ * Reads an #Equation from a string \p line in the format: \<a\> \<b\> \<c\>.
  * Some valid examples:
  *  - "1.0 2 3"
  *  - "1 -2 3"
  *
  *  @param line The string from which to read the equation
- *  @param eq The #Equation to read into
- *  @returns A zero if the equation was parsed successfully, otherwise a non-zero code.
+ *  @param eq   The #Equation to read into
+ *  @returns    A zero if the equation was parsed successfully, otherwise
+ *              a non-zero code.
  */
 int read_equation_from_line(char *line, Equation *eq);
 
 /**
- * Reads an #Equation from a \p argv using \p argc in the format: <a> <b> <c>. Each value should be in it's own argument
+ * Reads an #Equation from a \p argv using \p argc in the format: \<a\> \<b\> \<c\>.
+ * Each value should be in it's own argument.
  * Some valid examples:
  *  - "1.0 2 3"
  *  - "1 -2 3"
@@ -98,7 +101,8 @@ int read_equation_from_line(char *line, Equation *eq);
 int read_equation_from_argv(Equation *eq, int argc, char *argv[]);
 
 /**
- * Nicely prints solutions of an #Equation. Requires that \ref Equation.tag is not #NOT_COMPUTED.
+ * Nicely prints solutions of an #Equation. Requires that \ref Equation.tag
+ * is not #NOT_COMPUTED.
  *
  * @param eq The #Equation to get solutions from
  */
@@ -115,7 +119,7 @@ void print_solutions(const Equation eq);
 int is_zero(const double x);
 
 /**
- * Returns true if \x is within #EPSILON of \y.
+ * Returns true if \p x is within #EPSILON of \p y.
  *
  * @param x Number to check
  * @param y Number to check
@@ -133,15 +137,17 @@ double normalize_zero(const double x);
 
 /**
  * Solves an #Equation assuming that it's \ref Equation.a coefficient equals 0.
- * Puts the number of roots into \ref Equation.tag and the roots in \ref Equation.solutions
+ * Puts the number of roots into \ref Equation.tag and the roots
+ * in \ref Equation.solutions.
  *
  * @param eq Reference to the equation to solve
  */
 void solve_linear_equation(Equation *const eq);
 
 /**
- * Solves an #Equation assuming that it's \ref Equation.a coefficient does not equal 0.
- * Puts the number of roots into \ref Equation.tag and the roots in \ref Equation.solutions
+ * Solves an #Equation assuming that it's \ref Equation.a coefficient does
+ * not equal 0. Puts the number of roots into \ref Equation.tag and the roots
+ * in \ref Equation.solutions
  *
  * @param eq Reference to the equation to solve
  */
@@ -149,7 +155,8 @@ void solve_quadratic_equation(Equation *const eq);
 
 /**
  * Solves an #Equation.
- * Puts the number of roots into \ref Equation.tag and the roots in \ref Equation.solutions
+ * Puts the number of roots into \ref Equation.tag and the roots
+ * in \ref Equation.solutions.
  *
  * @param eq Reference to the equation to solve
  */

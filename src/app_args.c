@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Argument parsing for the equation solver
+ */
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -10,28 +15,29 @@ int prec_validator    (const char *prec,     char *error);
 int equation_validator(const char *equation, char *error);
 
 const ArgSpecItem arg_data[] = {
-  { 
-    .long_flag = "file",      
-    .arg_type = FLAG, 
-    .short_flag = 'f', 
+  {
+    .long_flag = "file",
+    .arg_type = FLAG,
+    .short_flag = 'f',
     .help = "The file to read from, if interpreting from file. Default: stdin",
-    .value = REQUIRED_VALUE, 
+    .value = REQUIRED_VALUE,
     .validator = file_validator,
   },
-  { 
-    .long_flag = "precision", 
-    .arg_type = FLAG, 
-    .short_flag = 'p', 
+  {
+    .long_flag = "precision",
+    .arg_type = FLAG,
+    .short_flag = 'p',
     .help = "Calculations precision in decimal digits. Default: 7",
-    .value = REQUIRED_VALUE, 
+    .value = REQUIRED_VALUE,
     .validator = prec_validator,
   },
-  { 
-    .long_flag = "equation",  
+  {
+    .long_flag = "equation",
     .arg_type = POSITIONAL,
-    .help = "Equation string. If it's present, solve the equation. Otherwise, read from stdin (see -f) and solve.",
-    .value = OPTIONAL_VALUE, 
-    .validator = equation_validator 
+    .help = "Equation string. If it's present, solve the equation. Otherwise, "
+            "read from stdin (see -f) and solve.",
+    .value = OPTIONAL_VALUE,
+    .validator = equation_validator
   },
 };
 
@@ -46,7 +52,7 @@ Args get_args(int argc, char *argv[]) {
   size_t output_len = 0;
 
   ParseStatus res = parse_args(argc, argv, spec, output, &output_len);
-  if (res != OK) {
+  if (res != PARSE_OK) {
     free(output);
     exit(1);
   }
@@ -101,9 +107,9 @@ int prec_validator(const char *prec, char *error) {
 
 int equation_validator(const char *equation, char *error) {
   // TODO
-  
+
   const char *null_error = "Somehow got a NULL on `equation`! This shouldn't happen";
-  
+
   if (!equation)
     strncpy(error, null_error, MAX_ERROR);
   return true;
