@@ -21,7 +21,9 @@ const ArgSpecItem *get_ith_posiional_arg(size_t index, ArgSpec spec);
 
 void add_parsed_arg(ParsedArg *out, size_t *len, ParsedArg item);
 
-ParseStatus try_parse_value(int argc, char *argv[], const ArgSpecItem *spec, int *current_arg, ParsedValue *item);
+ParseStatus try_parse_value(
+  int argc, char *argv[], const ArgSpecItem *spec,
+  int *current_arg, ParsedValue *item);
 
 ParseStatus parse_long_flag(
     ArgSpec spec, int argc, char *argv[], int *current_arg,
@@ -58,21 +60,26 @@ ParseStatus parse_args(int argc, char *argv[], ArgSpec spec,
     char *argument = argv[i];
     size_t argument_len = strlen(argument);
 
-    if (argument_len > 1 && argument[0] == '-' && argument[1] == '-') { // long flag
+    if (argument_len > 1 && argument[0] == '-' && argument[1] == '-') {
+      // long flag
       LOG_DEBUG("Long flag `%s`", argv[i]);
       ParseStatus res = parse_long_flag(spec, argc, argv, &i, output, output_len);
 
       if (res != PARSE_OK)
         return res;
-    } else if (argument_len && argument[0] == '-') {                    // sequence of short flags
+    } else if (argument_len && argument[0] == '-') {
+      // sequence of short flags
       LOG_DEBUG("Short flags `%s`", argv[i]);
-      ParseStatus res = parse_shorthand_chain(spec, argc, argv, &i, output, output_len);
+      ParseStatus res = parse_shorthand_chain(
+        spec, argc, argv, &i, output, output_len);
 
       if (res != PARSE_OK)
         return res;
-    } else {                                                            // positional argument
+    } else {
+      // positional argument
       LOG_DEBUG("Positional argument `%s`", argv[i]);
-      ParseStatus res = parse_positional_argument(spec, argv[i], positional_index, &i, output, output_len);
+      ParseStatus res = parse_positional_argument(
+        spec, argv[i], positional_index, &i, output, output_len);
 
       if (res != PARSE_OK)
         return res;
@@ -81,16 +88,19 @@ ParseStatus parse_args(int argc, char *argv[], ArgSpec spec,
     }
   }
 
-  // check if some positional arguments are missing
-  const ArgSpecItem *pos_spec = get_ith_posiional_arg(positional_index, spec);
-  if (pos_spec) {
-    LOG_ERROR("Missing positional argument %s!", pos_spec->long_flag);
-    return MISSING_VALUE;
+  // check if some required positional arguments are missing
+  const ArgSpecItem *pos_spec;
+  while ((pos_spec = get_ith_posiional_arg(positional_index, spec))) {
+    if (pos_spec && pos_spec->value == REQUIRED_VALUE) {
+      LOG_ERROR("Missing positional argument %s!", pos_spec->long_flag);
+      return MISSING_VALUE;
+    }
   }
 
   return PARSE_OK;
 }
 
+/* consume flags like --long-flag */
 ParseStatus parse_long_flag(
     ArgSpec spec, int argc, char *argv[], int *current_arg,
     ParsedArg *output, size_t *output_len) {
@@ -133,6 +143,7 @@ ParseStatus parse_long_flag(
   return PARSE_OK;
 }
 
+/* consume a shorthand chain, e.g. -abcd <value for d> */
 ParseStatus parse_shorthand_chain(
     ArgSpec spec, int argc, char *argv[], int *current_arg,
     ParsedArg *output, size_t *output_len) {
@@ -165,9 +176,11 @@ ParseStatus parse_shorthand_chain(
     }
   }
 
-  return try_parse_trailing_value(spec, argc, argv, current_arg, chain[chain_len - 1], output, output_len);
+  return try_parse_trailing_value(spec, argc, argv, current_arg,
+    chain[chain_len - 1], output, output_len);
 }
 
+/* parse a positional argument in order of definition in the spec */
 ParseStatus parse_positional_argument(
     ArgSpec spec, char *arg, size_t positional_index, int *current_arg,
     ParsedArg *output, size_t *output_len) {
@@ -186,7 +199,10 @@ ParseStatus parse_positional_argument(
   return PARSE_OK;
 }
 
-
+/*
+ * Try to consume a value after a shorthand chain. It will be for
+ * the last argument in the chain, e.g. "-abcd 123" will attribute "123" to "-d".
+ */
 ParseStatus try_parse_trailing_value(
     ArgSpec spec, int argc, char *argv[], int *current_arg,
     char flag, ParsedArg *output, size_t *output_len) {
@@ -198,6 +214,7 @@ ParseStatus try_parse_trailing_value(
   }
 
   if(curr_spec->value == NO_VALUE) {
+    // no need to consume anything
     add_parsed_arg(output, output_len, { curr_spec->long_flag, value_bool(true) });
     return PARSE_OK;
   } else {
@@ -221,11 +238,16 @@ ParseStatus try_parse_trailing_value(
   }
 }
 
-ParseStatus try_parse_value(int argc, char *argv[], const ArgSpecItem *spec, int *current_arg, ParsedValue *item) {
+/* try to consume a value for a give argument. */
+ParseStatus try_parse_value(
+  int argc, char *argv[], const ArgSpecItem *spec,
+  int *current_arg, ParsedValue *item) {
+
   if (!strcmp(argv[*current_arg], "--")) {
   // if the next arg is --, eat the next value anyhow
     if (*current_arg + 1 == argc) {
-      LOG_ERROR("A `--` can't be the last argument. If you want to pass in a literal `--`, do it in quotes.");
+      LOG_ERROR("A `--` can't be the last argument. If you want to pass in a"
+                " literal `--`, do `-- --`");
       return INVALID_VALUE;
     } else {
       (*current_arg)++;
@@ -284,7 +306,7 @@ ParseStatus run_validator(const ArgSpecItem *spec, const char *arg) {
   char error[MAX_ERROR] = {};
   if (spec->validator && !spec->validator(arg, error)) {
     if (strlen(error))
-      LOG_ERROR("Invalid argument `%s` (%s) - %s!", arg, spec->long_flag, error);
+      LOG_ERROR("Invalid argument `%s` (%s) - %s", arg, spec->long_flag, error);
     else
       LOG_ERROR("Invalid argument `%s` (%s)!", arg, spec->long_flag);
     return INVALID_VALUE;

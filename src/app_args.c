@@ -87,7 +87,9 @@ int file_validator(const char *file, char *error) {
   FILE *res = {};
   res = fopen(file, "r");
 
-  const char *file_error = "could not open file for reading, check if it exists and if you have permission.";
+  const char *file_error =
+    "Could not open file for reading, check if it exists and "
+    "if you have permission!";
 
   if (!res)
     strncpy(error, file_error, MAX_ERROR);
@@ -98,7 +100,7 @@ int prec_validator(const char *prec, char *error) {
   unsigned int num = 0;
   int result = sscanf(prec, "%u", &num);
 
-  const char *prec_error = "invalid format for unsigned integer!";
+  const char *prec_error = "Invalid format for unsigned integer!";
 
   if (!result)
     strncpy(error, prec_error, MAX_ERROR);
@@ -108,7 +110,8 @@ int prec_validator(const char *prec, char *error) {
 int equation_validator(const char *equation, char *error) {
   // TODO
 
-  const char *null_error = "Somehow got a NULL on `equation`! This shouldn't happen";
+  const char *null_error = "Somehow got a NULL on `equation`! "
+                           "This shouldn't happen.";
 
   if (!equation)
     strncpy(error, null_error, MAX_ERROR);
