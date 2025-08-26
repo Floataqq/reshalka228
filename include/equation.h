@@ -84,7 +84,7 @@ typedef struct {
  *  @returns    A zero if the equation was parsed successfully, otherwise
  *              a non-zero code.
  */
-int read_equation_from_line(char *line, Equation *eq);
+int read_equation_from_line(const char *line, Equation *eq);
 
 /**
  * Reads an #Equation from a \p argv using \p argc in the format: \<a\> \<b\> \<c\>.
@@ -98,7 +98,7 @@ int read_equation_from_line(char *line, Equation *eq);
  *  @param argv Arguments array
  *  @returns A zero if the equation was parsed successfully, otherwise a non-zero code.
  */
-int read_equation_from_argv(Equation *eq, int argc, char *argv[]);
+int read_equation_from_argv(Equation *eq, const int argc, const char *argv[]);
 
 /**
  * Nicely prints solutions of an #Equation. Requires that \ref Equation.tag

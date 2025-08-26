@@ -5,7 +5,7 @@
 #include "equation.h"
 #include "log.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, const char *argv[]) {
   Args args = get_args(argc, argv);
 
   Equation equation = {};
