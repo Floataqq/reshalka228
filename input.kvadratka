@@ -1,0 +1,7 @@
+let P = x + 1
+let Q = x + 2
+
+(P * Q)(2)
+
+solve P * Q
+

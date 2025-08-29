@@ -3,8 +3,8 @@
  * @brief A fairly simple library for parsing command-line arguments
  */
 
-#ifndef FLOATAQQ_LIB_ARG_PARSE
-#define FLOATAQQ_LIB_ARG_PARSE
+#ifndef LIB_ARG_PARSE
+#define LIB_ARG_PARSE
 
 #include <stdlib.h>
 
@@ -116,8 +116,8 @@ typedef enum {
  *
  * @returns A #ParseStatus - either #PARSE_OK or some error.
  */
-ParseStatus parse_args(const int argc, const char *argv[], ArgSpec spec,
-                       ParsedArg *output, size_t *output_len);
+ParseStatus parse_args (const int argc, const char *argv[], ArgSpec spec,
+                        ParsedArg *output, size_t *output_len);
 
 
-#endif // FLOATAQQ_LIB_ARG_PARSE
+#endif // LIB_ARG_PARSE

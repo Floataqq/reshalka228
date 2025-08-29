@@ -4,8 +4,8 @@
           to the app's #Args
  */
 
-#ifndef FLOATAQQ_LIB_APP_ARGS
-#define FLOATAQQ_LIB_APP_ARGS
+#ifndef LIB_APP_ARGS
+#define LIB_APP_ARGS
 
 
 #include <stdio.h>
@@ -18,18 +18,18 @@ typedef struct {
   FILE *file;
   /// A string that specifies the equation from command line args. If
   /// there isn't an equation in the arguments, this will be NULL.
-  char *equation;
+  const char *equation;
 } Args;
 
-/*
+/**
  * Get the #Args struct from command line, while nicely handling errors.
  */
-Args get_args(const int argc, const char *argv[]);
+Args get_args (const int argc, const char *argv[]);
 
-/*
+/**
  * A destructor for #Args. Must call before exiting application.
  */
-void destroy_args(Args args);
+void destroy_args (Args args);
 
 
-#endif // FLOATAQQ_LIB_APP_ARGS
+#endif // LIB_APP_ARGS

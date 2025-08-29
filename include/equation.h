@@ -11,7 +11,7 @@
  * Just like `assert(false)`, but doesn't print any sort of error message.
  * Does nothing if NDEBUG is defined.
  */
-[[noreturn]] void abort_with_ndebug(void);
+[[noreturn]] void abort_with_ndebug (void);
 
 /**
  * Quite similar to rust's `unreachable!()` macro.
@@ -44,12 +44,6 @@ typedef enum {
   INFINITE
 } SolutionStatus;
 
-// TODO: обощить до полинома
-// TODO: добавить стандартныое значение тэгу
-//       (конструктор \ дефолтная инициализация)
-// TODO: union с четырехпольной структурой
-// TODO: список велосипедов: логи, парсинг аргументов
-// TODO: ассерты везде накидать
 /// A structure describing a quadratic equation and it's solutions
 typedef struct {
   /// x^2 coefficient
@@ -85,7 +79,7 @@ typedef struct {
  *  @returns    A zero if the equation was parsed successfully, otherwise
  *              a non-zero code.
  */
-int read_equation_from_line(const char *line, Equation *eq);
+int read_equation_from_line (const char *line, Equation *eq);
 
 /**
  * Reads an #Equation from a \p argv using \p argc in the format: \<a\> \<b\> \<c\>.
@@ -99,7 +93,7 @@ int read_equation_from_line(const char *line, Equation *eq);
  *  @param argv Arguments array
  *  @returns A zero if the equation was parsed successfully, otherwise a non-zero code.
  */
-int read_equation_from_argv(Equation *eq, const int argc, const char *argv[]);
+int read_equation_from_argv (Equation *eq, const int argc, const char *argv[]);
 
 /**
  * Nicely prints solutions of an #Equation. Requires that \ref Equation.tag
@@ -107,7 +101,7 @@ int read_equation_from_argv(Equation *eq, const int argc, const char *argv[]);
  *
  * @param eq The #Equation to get solutions from
  */
-void print_solutions(const Equation eq);
+void print_solutions (const Equation eq);
 
 // ------- src/arith.c -------
 
@@ -117,7 +111,7 @@ void print_solutions(const Equation eq);
  * @param x The number to check.
  * @returns A zero if \p x is within #EPSILON of 0. Otherwise a non-zero code.
  */
-int is_zero(const double x);
+int is_zero (const double x);
 
 /**
  * Returns true if \p x is within #EPSILON of \p y.
@@ -126,7 +120,7 @@ int is_zero(const double x);
  * @param y Number to check
  * @returns Whether the numbers are compute_solutions
  */
-int is_equal(const double x, const double y);
+int is_equal (const double x, const double y);
 
 /**
  * Sets `-0` to 0. Otherwise returns the same number
@@ -134,7 +128,7 @@ int is_equal(const double x, const double y);
  * @param x The number to modify
  * @returns Zero if the number is `-0`, otherwise the same number
  */
-double normalize_zero(const double x);
+double normalize_zero (const double x);
 
 /**
  * Solves an #Equation assuming that it's \ref Equation.a coefficient equals 0.
@@ -143,7 +137,7 @@ double normalize_zero(const double x);
  *
  * @param eq Reference to the equation to solve
  */
-void solve_linear_equation(Equation *const eq);
+void solve_linear_equation (Equation *const eq);
 
 /**
  * Solves an #Equation assuming that it's \ref Equation.a coefficient does
@@ -152,7 +146,7 @@ void solve_linear_equation(Equation *const eq);
  *
  * @param eq Reference to the equation to solve
  */
-void solve_quadratic_equation(Equation *const eq);
+void solve_quadratic_equation (Equation *const eq);
 
 /**
  * Solves an #Equation.
@@ -161,7 +155,7 @@ void solve_quadratic_equation(Equation *const eq);
  *
  * @param eq Reference to the equation to solve
  */
-void compute_solutions(Equation *const eq);
+void compute_solutions (Equation *const eq);
 
 
 #endif // EQUATION_SOLVER_LIB

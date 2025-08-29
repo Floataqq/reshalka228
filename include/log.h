@@ -3,8 +3,8 @@
  * @brief A simple library that provides logging macros
  */
 
-#ifndef FLOATAQQ_LOG_LIB
-#define FLOATAQQ_LOG_LIB
+#ifndef LIB_LOG_H
+#define LIB_LOG_H
 
 #ifdef __unix__
   #define FL_UNIX
@@ -47,7 +47,7 @@ void fl_logs_on (void);
  * Suppress all logs temporarily.
  * \relates fl_logs_on
  */
-void fl_logs_off(void);
+void fl_logs_off (void);
 
 /// An enum describing log levels
 typedef enum {
@@ -93,7 +93,7 @@ typedef struct {
  *
  * @returns #printf status code
  */
-int _fl_write_log(FL_LogLevel level, _FL_LogContext ctx, const char *fmt, ...);
+int _fl_write_log (FL_LogLevel level, _FL_LogContext ctx, const char *fmt, ...);
 
 /**
  * Log with \p level log level. Other arguments work like #printf.
@@ -105,7 +105,7 @@ int _fl_write_log(FL_LogLevel level, _FL_LogContext ctx, const char *fmt, ...);
    * Log with #FL_DEBUG log level. Arguments work like #printf.
    * Doesn't do anything if `NDEBUG` is defined.
    */
-  #define LOG_DEBUG(fmt, ...) {}
+  #define LOG_DEBUG(fmt, ...) ((void)0)
 #else
   /**
    * Log with #FL_DEBUG log level. Arguments work like #printf.
@@ -140,5 +140,5 @@ int _fl_write_log(FL_LogLevel level, _FL_LogContext ctx, const char *fmt, ...);
 /// ANSI escape code for resetting styles
 #define COLOR_RESET  "\033[0m"
 
-#endif // FLOATAQQ_LOG_LIB
+#endif // LIB_LOG_H
 

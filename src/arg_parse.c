@@ -13,42 +13,42 @@
 
 const size_t MAX_ERROR = 1024;
 
-ParsedValue value_str (const char *val);
-ParsedValue value_bool(bool  val);
+ParsedValue value_str  (const char *val);
+ParsedValue value_bool (bool  val);
 
-const ArgSpecItem *get_spec_by_long_flag(const char  *flag, ArgSpec spec);
-const ArgSpecItem *get_spec_by_shorthand(char         flag, ArgSpec spec);
-const ArgSpecItem *get_ith_posiional_arg(size_t      index, ArgSpec spec);
+const ArgSpecItem *get_spec_by_long_flag (const char  *flag, ArgSpec spec);
+const ArgSpecItem *get_spec_by_shorthand (char         flag, ArgSpec spec);
+const ArgSpecItem *get_ith_posiional_arg (size_t      index, ArgSpec spec);
 
-void add_parsed_arg(ParsedArg *out, size_t *len, ParsedArg item);
+void add_parsed_arg (ParsedArg *out, size_t *len, ParsedArg item);
 
-ParseStatus try_parse_value(
+ParseStatus try_parse_value (
   const int argc, const char *argv[], const ArgSpecItem *spec,
   int *current_arg, ParsedValue *item);
 
-ParseStatus parse_long_flag(
+ParseStatus parse_long_flag (
     ArgSpec spec, const int argc, const char *argv[], int *current_arg,
     ParsedArg *output, size_t *output_len);
 
-ParseStatus parse_shorthand_chain(
+ParseStatus parse_shorthand_chain (
     ArgSpec spec, const int argc, const char *argv[], int *current_arg,
     ParsedArg *output, size_t *output_len);
 
-ParseStatus parse_positional_argument(
+ParseStatus parse_positional_argument (
     ArgSpec spec, const char *arg, size_t positional_index, int *current_arg,
     ParsedArg *output, size_t *output_len);
 
-ParseStatus try_parse_trailing_value(
+ParseStatus try_parse_trailing_value (
     ArgSpec spec, const int argc, const char *argv[], int *current_arg,
     char flag, ParsedArg *output, size_t *output_len);
 
-ParseStatus run_validator(const ArgSpecItem *spec, const char *arg);
+ParseStatus run_validator (const ArgSpecItem *spec, const char *arg);
 
-[[noreturn]] void print_help_and_exit(ArgSpec spec, const char *progname);
-void print_usage(ArgSpec spec, const char *progname);
+[[noreturn]] void print_help_and_exit (ArgSpec spec, const char *progname);
+void print_usage (ArgSpec spec, const char *progname);
 
-ParseStatus parse_args(const int argc, const char *argv[], ArgSpec spec,
-                       ParsedArg *output, size_t *output_len) {
+ParseStatus parse_args (const int argc, const char *argv[], ArgSpec spec,
+                        ParsedArg *output, size_t *output_len) {
   for (int i = 0; i < argc; i++) {
     if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
       print_help_and_exit(spec, argv[0]);
@@ -103,7 +103,7 @@ ParseStatus parse_args(const int argc, const char *argv[], ArgSpec spec,
 }
 
 /* consume flags like --long-flag */
-ParseStatus parse_long_flag(
+ParseStatus parse_long_flag (
     ArgSpec spec, const int argc, const char *argv[], int *current_arg,
     ParsedArg *output, size_t *output_len) {
 
@@ -146,7 +146,7 @@ ParseStatus parse_long_flag(
 }
 
 /* consume a shorthand chain, e.g. -abcd <value for d> */
-ParseStatus parse_shorthand_chain(
+ParseStatus parse_shorthand_chain (
     ArgSpec spec, const int argc, const char *argv[], int *current_arg,
     ParsedArg *output, size_t *output_len) {
 
@@ -164,17 +164,18 @@ ParseStatus parse_shorthand_chain(
     }
 
     switch (curr_spec->value) {
-    case NO_VALUE:
-      add_parsed_arg(output, output_len, { curr_spec->long_flag, value_bool(true) });
-      break;
-    case OPTIONAL_VALUE:
-      add_parsed_arg(output, output_len, { curr_spec->long_flag, value_str(NULL) });
-      break;
-    case REQUIRED_VALUE:
-      LOG_ERROR("Shorthand -%c (--%s) requires a value!", chain[i], curr_spec->long_flag);
-      return MISSING_VALUE;
-    default:
-      break;
+      case NO_VALUE:
+        add_parsed_arg(output, output_len, { curr_spec->long_flag, value_bool(true) });
+        break;
+      case OPTIONAL_VALUE:
+        add_parsed_arg(output, output_len, { curr_spec->long_flag, value_str(NULL) });
+        break;
+      case REQUIRED_VALUE:
+        LOG_ERROR("Shorthand -%c (--%s) requires a value!", chain[i],
+          curr_spec->long_flag);
+        return MISSING_VALUE;
+      default:
+        break;
     }
   }
 
@@ -183,9 +184,10 @@ ParseStatus parse_shorthand_chain(
 }
 
 /* parse a positional argument in order of definition in the spec */
-ParseStatus parse_positional_argument(
+ParseStatus parse_positional_argument (
     ArgSpec spec, const char *arg, size_t positional_index, int *current_arg,
     ParsedArg *output, size_t *output_len) {
+
   (*current_arg)++;
   const ArgSpecItem *curr_spec = get_ith_posiional_arg(positional_index, spec);
   if (!curr_spec) {
@@ -205,17 +207,17 @@ ParseStatus parse_positional_argument(
  * Try to consume a value after a shorthand chain. It will be for
  * the last argument in the chain, e.g. "-abcd 123" will attribute "123" to "-d".
  */
-ParseStatus try_parse_trailing_value(
+ParseStatus try_parse_trailing_value (
     ArgSpec spec, const int argc, const char *argv[], int *current_arg,
     char flag, ParsedArg *output, size_t *output_len) {
-  
+
   const ArgSpecItem *curr_spec = get_spec_by_shorthand(flag, spec);
   if (!curr_spec) {
     LOG_ERROR("Invalid shorthand `-%c`!", flag);
     return INVALID_FLAG;
   }
 
-  if(curr_spec->value == NO_VALUE) {
+  if (curr_spec->value == NO_VALUE) {
     // no need to consume anything
     add_parsed_arg(output, output_len, { curr_spec->long_flag, value_bool(true) });
     return PARSE_OK;
@@ -231,7 +233,8 @@ ParseStatus try_parse_trailing_value(
         add_parsed_arg(output, output_len, { curr_spec->long_flag, value_str(NULL) });
         return PARSE_OK;
       } else {
-        LOG_ERROR("Missing value for shorthand -%c (--%s)!", flag, curr_spec->long_flag);
+        LOG_ERROR("Missing value for shorthand -%c (--%s)!", flag,
+          curr_spec->long_flag);
         return MISSING_VALUE;
       }
     } else {
@@ -240,11 +243,11 @@ ParseStatus try_parse_trailing_value(
   }
 }
 
-/* try to consume a value for a give argument. */
-ParseStatus try_parse_value(
+/* try to consume a value for a given argument. */
+ParseStatus try_parse_value (
   const int argc, const char *argv[], const ArgSpecItem *spec,
   int *current_arg, ParsedValue *item) {
-  
+
   if (*current_arg >= argc) {
     *item = ParsedValue { .str_val = NULL };
     return PARSE_OK;
@@ -277,7 +280,7 @@ ParseStatus try_parse_value(
   return PARSE_OK;
 }
 
-const ArgSpecItem *get_spec_by_long_flag(const char *flag, ArgSpec spec) {
+const ArgSpecItem *get_spec_by_long_flag (const char *flag, ArgSpec spec) {
   for (int i = 0; i < spec.len; i++) {
     if (!strcmp(spec.data[i].long_flag, flag))
       return &spec.data[i];
@@ -286,7 +289,7 @@ const ArgSpecItem *get_spec_by_long_flag(const char *flag, ArgSpec spec) {
   return NULL;
 }
 
-const ArgSpecItem *get_spec_by_shorthand(char flag, ArgSpec spec) {
+const ArgSpecItem *get_spec_by_shorthand (char flag, ArgSpec spec) {
   for (int i = 0; i < spec.len; i++) {
     if (spec.data[i].short_flag == flag)
       return &spec.data[i];
@@ -295,7 +298,7 @@ const ArgSpecItem *get_spec_by_shorthand(char flag, ArgSpec spec) {
   return NULL;
 }
 
-const ArgSpecItem *get_ith_posiional_arg(size_t index, ArgSpec spec) {
+const ArgSpecItem *get_ith_posiional_arg (size_t index, ArgSpec spec) {
   size_t pos_count = 0;
   for (int i = 0; i < spec.len; i++) {
     if (spec.data[i].arg_type == POSITIONAL)
@@ -309,8 +312,9 @@ const ArgSpecItem *get_ith_posiional_arg(size_t index, ArgSpec spec) {
   return NULL;
 }
 
-ParseStatus run_validator(const ArgSpecItem *spec, const char *arg) {
+ParseStatus run_validator (const ArgSpecItem *spec, const char *arg) {
   char error[MAX_ERROR] = {};
+
   if (spec->validator && !spec->validator(arg, error)) {
     if (strlen(error))
       LOG_ERROR("Invalid argument `%s` (%s) - %s", arg, spec->long_flag, error);
@@ -322,19 +326,19 @@ ParseStatus run_validator(const ArgSpecItem *spec, const char *arg) {
   return PARSE_OK;
 }
 
-void add_parsed_arg(ParsedArg *out, size_t *len, ParsedArg item) {
+void add_parsed_arg (ParsedArg *out, size_t *len, ParsedArg item) {
   out[(*len)++] = item;
 }
 
-ParsedValue value_str(const char *val) {
+ParsedValue value_str (const char *val) {
   return ParsedValue { .str_val =  val };
 }
 
-ParsedValue value_bool(bool val) {
+ParsedValue value_bool (bool val) {
   return ParsedValue { .bool_val = val };
 }
 
-[[noreturn]] void print_help_and_exit(ArgSpec spec, const char *progname) {
+[[noreturn]] void print_help_and_exit (ArgSpec spec, const char *progname) {
   print_usage(spec, progname);
 
   if (spec.synopsis)
@@ -382,7 +386,7 @@ ParsedValue value_bool(bool val) {
   exit(0);
 }
 
-void print_usage(ArgSpec spec, const char *progname) {
+void print_usage (ArgSpec spec, const char *progname) {
   printf("Usage: %s [options]... ", progname);
 
   size_t i = 0;

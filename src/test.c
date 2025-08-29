@@ -62,7 +62,7 @@ void fl_test_runner(int *failed_num) {
   }
 
   if (test->res.message[0])
-    LOG_DEBUG("  msg: '%s'", test->res.message);
+    LOG_INFO("  msg: '%s'", test->res.message);
 }
 
 [[noreturn]] void fl_run_tests() {

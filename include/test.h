@@ -3,15 +3,15 @@
  * @brief A testing library that works quite similarly to gtest
  */
 
-#ifndef FLOATAQQ_TEST_LIB
-#define FLOATAQQ_TEST_LIB
+#ifndef LIB_TEST
+#define LIB_TEST
 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-
+/// Max length of an error message
 #define FL_MAX_MSG 1024
 
 typedef enum {
@@ -37,13 +37,13 @@ extern _FL_Test *_fl_test_data;
 extern size_t    _fl_test_count;
 extern size_t    _fl_test_capacity;
 
-// Used by asserts under the hood to understand, what test are they for.
+// Used by asserts under the hood to understand, what test are they for
 extern thread_local size_t _fl_current_test_index;
 
 // TODO: мега ассерт
 
-int  _fl_add_test(const char test_name[], void (*test)());
-void  fl_test_runner(int *failed_num);
+int  _fl_add_test (const char test_name[], void (*test)());
+void  fl_test_runner (int *failed_num);
 
 /**
  * Run all the registered tests. Just call it from a separate main() and include all #TEST declarations
@@ -88,8 +88,8 @@ void  fl_test_runner(int *failed_num);
     }                                   \
   }
 
-#define ASSERT_BOOL(x)  ASSERT_BOOL_MSG(x,  "Assertion failed: `%s` evaluates to false", #x)
+#define ASSERT_BOOL(x)  ASSERT_BOOL_MSG(x,      "Assertion failed: `%s` evaluates to false", #x)
 #define ASSERT_EQ(x, y) ASSERT_BOOL_MSG(x == y, "Assertion failed: `%s` != `%s`", #x, #y)
 #define ASSERT_NE(x, y) ASSERT_BOOL_MSG(x != y, "Assertion failed: `%s` == `%s`", #x, #y)
 
-#endif // FLOATAQQ_TEST_LIB
+#endif // LIB_TEST
