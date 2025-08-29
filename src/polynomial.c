@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Polynomial operations
+ */
+
 #include <assert.h>
 #include <stdio.h>
 

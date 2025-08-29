@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief algebraic expression parser
+ */
+
 #include <complex.h>
 #include <cstdlib>
 #include <stdlib.h>
